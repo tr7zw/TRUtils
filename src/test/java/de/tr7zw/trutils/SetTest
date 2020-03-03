@@ -1,0 +1,24 @@
+package de.tr7zw.trutils;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Test;
+
+public class SetTest {
+
+	@Test
+	public void testSetToList() {
+		TRSet<Integer> set = TRUtils.createSet(1, 2, 3, 4, 5, 5);
+		TRList<Integer> list = set.toList();
+		assertEquals(5, list.size());
+		assertNotNull(set.getSet());
+	}
+	
+	@Test
+	public void testWrapSystemCollection() {
+		TRCollection<String> values = TRUtils.wrap(System.getenv().values());
+		assertNotNull(values.getAny());
+	}
+
+}
