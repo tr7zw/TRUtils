@@ -96,23 +96,21 @@ public interface TRCollection<E> extends Collection<E> {
 
 	/**
 	 * Tries to get the generic datatype and creates an Array using it. Try to pass
-	 * the Array target class if possible.
+	 * the Array target class if possible. Returns null when the type can not be
+	 * determined/the collection is empty
 	 * 
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public default E[] toTypeArray() {
-		if (isEmpty())
-			return (E[]) toArray();
 		Class<? extends E> clazz = getContentClass();
 		if (clazz != null) {
 			return toTypeArray(clazz);
 		}
-		return (E[]) toArray();
+		return null;
 	}
 
 	/**
-	 * toArray helper class that does the typesave cast
+	 * toArray helper class that does the typesave cast. Works on empty lists
 	 * 
 	 * @param <T>
 	 * @param target
@@ -127,7 +125,7 @@ public interface TRCollection<E> extends Collection<E> {
 	 * @return Any object inside the collection or null
 	 */
 	public default E getAny() {
-		return stream().findAny().get();
+		return stream().findAny().orElseGet(() -> null);
 	}
 
 	/**
