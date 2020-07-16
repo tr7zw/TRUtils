@@ -8,18 +8,18 @@ import java.util.function.Supplier;
 
 public class AutoMap<K, V> implements TRMap<K, V>{
 
-	private final Supplier<Collection<K>> backingCollection;
+	private final Supplier<Set<K>> backingSet;
 	private final Function<K, V> creator;
 	
 	private final TRMap<K, V> map = TRUtils.createHashMap();
 	
-	public AutoMap(Supplier<Collection<K>> backing, Function<K, V> creator) {
-		this.backingCollection = backing;
+	public AutoMap(Supplier<Set<K>> backing, Function<K, V> creator) {
+		this.backingSet = backing;
 		this.creator = creator;
 	}
 	
 	private void update() {
-		Collection<K> backing = backingCollection.get();
+		Collection<K> backing = backingSet.get();
 		map.removeIf((k,v) -> !backing.contains(k));
 		map.computeAllIfAbsent(backing, creator);
 	}
@@ -32,12 +32,12 @@ public class AutoMap<K, V> implements TRMap<K, V>{
 
 	@Override
 	public boolean isEmpty() {
-		return backingCollection.get().isEmpty();
+		return backingSet.get().isEmpty();
 	}
 
 	@Override
 	public boolean containsKey(Object key) {
-		return backingCollection.get().contains(key);
+		return backingSet.get().contains(key);
 	}
 
 	@Override
@@ -59,7 +59,13 @@ public class AutoMap<K, V> implements TRMap<K, V>{
 
 	@Override
 	public V remove(Object key) {
-		throw new UnsupportedOperationException();
+		update();
+		if(map.containsKey(key)) {
+			V tmp = map.get(key);
+			backingSet.get().remove(key);
+			return tmp;
+		}
+		return null;
 	}
 
 	@Override
@@ -69,13 +75,12 @@ public class AutoMap<K, V> implements TRMap<K, V>{
 
 	@Override
 	public void clear() {
-		throw new UnsupportedOperationException();
+		backingSet.get().clear();
 	}
 
 	@Override
 	public Set<K> keySet() {
-		update();
-		return map.keySet();
+		return backingSet.get();
 	}
 
 	@Override

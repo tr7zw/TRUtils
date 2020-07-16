@@ -33,9 +33,8 @@ public interface TRMap<K, V> extends Map<K, V> {
 	 * @param function
 	 */
 	public default void using(K key, Consumer<V> function) {
-		V val = get(key);
-		if (val != null) {
-			function.accept(val);
+		if (containsKey(key)) {
+			function.accept(get(key));
 		}
 	}
 
@@ -47,9 +46,8 @@ public interface TRMap<K, V> extends Map<K, V> {
 	 */
 	public default void using(Collection<K> keys, Consumer<V> function) {
 		for (K key : keys) {
-			V val = get(key);
-			if (val != null) {
-				function.accept(val);
+			if (containsKey(key)) {
+				function.accept(get(key));
 			}
 		}
 	}

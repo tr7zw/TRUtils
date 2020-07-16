@@ -30,6 +30,15 @@ public class BitBoolean {
 		/* NOTE: All boolean values will be initially false */
 
 	}
+	
+	protected BitBoolean(byte[] data, int length) {
+		this.booleanData = data;
+		this.booleanDataLength = length;
+	}
+	
+	protected byte[] getData() {
+		return booleanData;
+	}
 
 	private void checkIndexBounds(int index) {
 		if (index < 0)
@@ -59,6 +68,10 @@ public class BitBoolean {
 		return (Integer.toBinaryString(0x100 + (int) (b & 0xFF)).substring(1));
 	}
 
+	public int size() {
+		return booleanDataLength;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
